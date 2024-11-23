@@ -15,7 +15,7 @@ export function TimePicker({ date, setDate }: TimePickerProps) {
 
     return (
         <div className="group w-[min(700px,100%-2rem)] flex flex-col items-center gap-4">
-            <p className="text-xl opacity-85 group-hover:opacity-100 transition-opacity">Endre når helgen din starter:</p>
+            <p className="text-xl opacity-85 group-hover:opacity-100 transition-opacity">Change when your weekend starts:</p>
 
             <div className="flex items-start gap-2">
                 <div className="grid gap-1 text-center">
