@@ -4,19 +4,19 @@ import * as React from "react";
 import { Label } from "@/components/ui/label";
 import { TimePickerInput } from "@/components/ui/time-picker-input";
 
-interface TimePickerDemoProps {
+interface TimePickerProps {
     date: Date | undefined;
-    setDate: (date: Date | undefined) => void;
+    setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
-export function TimePicker({ date, setDate }: TimePickerDemoProps) {
+export function TimePicker({ date, setDate }: TimePickerProps) {
     const minuteRef = React.useRef<HTMLInputElement>(null);
     const hourRef = React.useRef<HTMLInputElement>(null);
 
     return (
         <div className="group w-[min(700px,100%-2rem)] flex flex-col items-center gap-4">
             <p className="text-xl opacity-85 group-hover:opacity-100 transition-opacity">Endre når helgen din starter:</p>
-            
+
             <div className="flex items-start gap-2">
                 <div className="grid gap-1 text-center">
                     <TimePickerInput

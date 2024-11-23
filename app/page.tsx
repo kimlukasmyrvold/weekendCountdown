@@ -1,9 +1,9 @@
-import Countdown from "@/components/countdown";
+import WeekendCountdown from "@/components/countdown";
 
 export default function Home() {
     return (
         <>
-            <Countdown></Countdown>
+            <WeekendCountdown></WeekendCountdown>
         </>
     );
 }

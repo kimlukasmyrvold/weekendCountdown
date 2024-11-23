@@ -6,11 +6,29 @@ import { getDaysUntilDay, isWeekend } from "@/lib/actions";
 import { TimePicker } from "@/components/time-picker";
 import { GetDaysUntilDay } from "@/lib/interfaces";
 
-export default function Countdown() {
+export default function WeekendCountdown() {
     const now: Date = useMemo(() => new Date(), []);
+    const emptyDate: Date = useMemo(() => new Date(now), [now]);
+    emptyDate.setHours(0, 0, 0, 0);
+    const defaults: { hour: number, minute: number, second: number, millisecond: number } = useMemo(() => {
+        return {
+            hour: 16,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+        };
+    }, []);
+
     const [isClient, setIsClient] = useState(false);
     const [weekend, setWeekend] = useState<boolean>(false);
-    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [date, setDate] = useState<Date>(() => {
+        const defaultDate: Date = new Date(now);
+        defaultDate.setHours(defaults.hour, defaults.minute, defaults.second, defaults.millisecond);
+        return defaultDate;
+    });
+
+    const [fridayCount, setFridayCount] = useState<GetDaysUntilDay>(getDaysUntilDay("Friday", date, now));
+    const [mondayCount, setMondayCount] = useState<GetDaysUntilDay>(getDaysUntilDay("Monday", emptyDate, now));
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -19,12 +37,12 @@ export default function Countdown() {
             if (savedDate) {
                 setDate(new Date(savedDate));
             } else {
-                const defaultDate = new Date(now);
-                defaultDate.setHours(16, 0, 0, 0);
-                setDate(defaultDate);
+                const newDate = new Date(now);
+                newDate.setHours(defaults.hour, defaults.minute, defaults.second, defaults.millisecond);
+                setDate(newDate);
             }
         }
-    }, [now]);
+    }, [now, defaults]);
 
     useEffect(() => {
         if (typeof window !== "undefined" && date) {
@@ -32,20 +50,17 @@ export default function Countdown() {
         }
     }, [date]);
 
-    const daysUntilFriday: GetDaysUntilDay = date
-        ? getDaysUntilDay("Friday", date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds(), now)
-        : { days: now.getDay().toString(), time: { hours: "16", minutes: "0", seconds: "0", milliseconds: "0" } };
-
-    const daysUntilMonday: GetDaysUntilDay = getDaysUntilDay("Monday", 0, 0, 0, 0, now);
-
     useEffect(() => {
         setIsClient(true);
         const intervalId = setInterval(() => {
-            setWeekend(isWeekend(16, 0, new Date()));
+            const newDate: Date = new Date();
+            setWeekend(isWeekend(defaults.hour, defaults.minute, newDate));
+            setFridayCount(getDaysUntilDay("Friday", date, newDate));
+            setMondayCount(getDaysUntilDay("Monday", emptyDate, newDate));
         }, 500);
 
         return () => clearInterval(intervalId);
-    }, []);
+    }, [defaults, date, emptyDate]);
 
     if (!isClient) {
         return null;
@@ -54,14 +69,14 @@ export default function Countdown() {
     return (
         <article className="flex flex-col items-center justify-center mb-24 flex-1 pt-16">
             <div className="flex flex-col justify-center gap-4 items-center mb-20">
-                <h1 className="text-4xl md:text-6xl">{weekend ? "It's the weekend! 🎉" : "It's a weekday. 😔"}</h1>
+                <h2 className="text-4xl md:text-6xl">{weekend ? "It's the weekend! 🎉" : "It's a weekday. 😔"}</h2>
             </div>
             <div className="flex flex-col justify-center items-center gap-4 mb-20 w-full">
                 <div className="w-[min(700px,100%-2rem)]">
                     {weekend ? (
-                        <CountdownToMonday count={daysUntilMonday}></CountdownToMonday>
+                        <CountdownToDay count={mondayCount} title="The weekend is over in:"></CountdownToDay>
                     ) : (
-                        <CountdownToFriday count={daysUntilFriday}></CountdownToFriday>
+                        <CountdownToDay count={fridayCount} title="The weekend starts in:"></CountdownToDay>
                     )}
                 </div>
             </div>
@@ -73,28 +88,11 @@ export default function Countdown() {
     );
 }
 
-function CountdownToFriday({ count }: { count: GetDaysUntilDay }) {
+function CountdownToDay({ count, title }: { count: GetDaysUntilDay, title: string }) {
     return (
         <>
             <div className="mb-6">
-                <p className="text-xl font-normal text-center sm:text-left">The weekend starts in:</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <TimeContainer time={count.days} format="Days" hidden={Number(count.days) < 1}></TimeContainer>
-                <TimeContainer time={count.time.hours} format="Hours"></TimeContainer>
-                <TimeContainer time={count.time.minutes} format="Minutes"></TimeContainer>
-                <TimeContainer time={count.time.seconds} format="Seconds"></TimeContainer>
-                <TimeContainer time={count.time.milliseconds} format="Milliseconds" hidden={Number(count.days) > 0}></TimeContainer>
-            </div>
-        </>
-    );
-}
-
-function CountdownToMonday({ count }: { count: GetDaysUntilDay }) {
-    return (
-        <>
-            <div className="mb-6">
-                <p className="text-xl font-normal text-center sm:text-left">The weekend is over in:</p>
+                <p className="text-xl font-normal text-center sm:text-left">{title}</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <TimeContainer time={count.days} format="Days" hidden={Number(count.days) < 1}></TimeContainer>

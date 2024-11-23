@@ -14,7 +14,7 @@ export interface TimePickerInputProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
     picker: TimePickerType;
     date: Date | undefined;
-    setDate: (date: Date | undefined) => void;
+    setDate: React.Dispatch<React.SetStateAction<Date>>;
     period?: Period;
     onRightFocus?: () => void;
     onLeftFocus?: () => void;

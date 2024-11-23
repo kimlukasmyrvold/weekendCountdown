@@ -39,16 +39,14 @@ const isTargetTimePassed = (
 
 export const getDaysUntilDay = (
     targetDay: string,
-    targetHour: number,
-    targetMinute: number,
-    targetSecond: number,
-    targetMillisecond: number,
+    time: Date,
     now: Date
 ) => {
     const targetDayIndex = daysOfWeek.indexOf(targetDay);
     if (targetDayIndex === -1) throw new Error("Invalid day of the week.");
     const currentDayIndex = now.getDay();
 
+    const [targetHour, targetMinute, targetSecond, targetMillisecond] = [time.getHours(), time.getMinutes(), time.getSeconds(), time.getMilliseconds()];
     let daysUntil = targetDayIndex - currentDayIndex;
     if (daysUntil < 0 || (daysUntil === 0 && isTargetTimePassed(now, targetHour, targetMinute, targetSecond, targetMillisecond))) {
         daysUntil += 7;
