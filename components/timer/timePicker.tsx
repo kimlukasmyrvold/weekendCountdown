@@ -1,28 +1,22 @@
 "use client";
 
-import * as React from "react";
+import { useRef } from "react";
 import { Label } from "@/components/ui/label";
 import { TimePickerInput } from "@/components/ui/timePickerInput";
 
-interface TimePickerProps {
-    date: Date | undefined;
-    setDate: (date: Date | undefined) => void;
-}
 
-export function TimePicker({ date, setDate }: TimePickerProps) {
-    const minuteRef = React.useRef<HTMLInputElement>(null);
-    const hourRef = React.useRef<HTMLInputElement>(null);
+export function TimePicker({ time, onTimeChange }: { time: Date | undefined; onTimeChange: (time: Date | undefined) => void }) {
+    const minuteRef = useRef<HTMLInputElement>(null);
+    const hourRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className="group w-[min(700px,100%-2rem)] flex flex-col items-center gap-4">
-            <p className="text-xl opacity-85 group-hover:opacity-100 transition-opacity">Change when your weekend starts:</p>
-
             <div className="flex items-start gap-2">
                 <div className="grid gap-1 text-center">
                     <TimePickerInput
                         picker="hours"
-                        date={date}
-                        onDateChange={setDate}
+                        date={time}
+                        onDateChange={onTimeChange}
                         ref={hourRef}
                         onRightFocus={() => minuteRef.current?.focus()}
                     />
@@ -36,8 +30,8 @@ export function TimePicker({ date, setDate }: TimePickerProps) {
                 <div className="grid gap-1 text-center">
                     <TimePickerInput
                         picker="minutes"
-                        date={date}
-                        onDateChange={setDate}
+                        date={time}
+                        onDateChange={onTimeChange}
                         ref={minuteRef}
                         onLeftFocus={() => hourRef.current?.focus()}
                     />

@@ -24,17 +24,17 @@ export default function RootLayout({
                 <link rel="manifest" href="/site.webmanifest" />
             </head>
             <body className="bg-background text-foreground">
-                <div id="app" className="mb-32">
-                    <main className="flex flex-col h-screen bg-background relative z-10 py-4">
+                <div id="app" className="md:mb-48">
+                    <main className="flex flex-col min-h-screen bg-background relative z-10 py-4">
                         <header className="flex justify-between items-center pb-2 mx-auto w-[min(1200px,100%-2rem)]">
                             <div>
-                                <h1 className="text-4xl mb-1">Weekend Countdown</h1>
+                                <Link href={'/'} className="text-4xl mb-1">Weekend Countdown</Link>
                                 <p>Countdown the time until the weekend</p>
                             </div>
                         </header>
                         {children}
                     </main>
-                    <footer className="fixed bottom-0 z-0 w-full h-32 bg-card flex flex-col justify-center items-center gap-2">
+                    <footer className="md:fixed bottom-0 z-0 w-full min-h-48 bg-card flex flex-col justify-center items-center gap-2 py-6 px-3">
                         <p className="opacity-85">
                             Copyright &copy; {new Date().getFullYear()}
                             <span className="opacity-50 mx-2">|</span>
