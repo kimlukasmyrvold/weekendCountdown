@@ -1,4 +1,4 @@
-import WeekendCountdown from "@/components/countdown";
+import { WeekendCountdown } from "@/components/countdown/countdown";
 // import Timer from "@/components/timer/timer";
 
 export default function Home() {
